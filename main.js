@@ -7,31 +7,6 @@
 const lerp = (a, b, t) => a + (b - a) * t;
 
 /* ══════════════════════════════════════════
-   1. HARDWARE ACCELERATED CURSOR
-══════════════════════════════════════════ */
-(function initCursor() {
-  const dot  = document.getElementById('cursor-dot');
-  const ring = document.getElementById('cursor-ring');
-  if (!dot || !ring) return;
-
-  let mx = window.innerWidth / 2, my = window.innerHeight / 2;
-  let rx = mx, ry = my;
-
-  document.addEventListener('mousemove', e => {
-    mx = e.clientX;
-    my = e.clientY;
-    dot.style.transform = `translate3d(${mx - 3}px, ${my - 3}px, 0)`; 
-  }, { passive: true });
-
-  (function follow() {
-    rx = lerp(rx, mx, 0.15);
-    ry = lerp(ry, my, 0.15);
-    ring.style.transform = `translate3d(${rx}px, ${ry}px, 0)`;
-    requestAnimationFrame(follow);
-  })();
-})();
-
-/* ══════════════════════════════════════════
    2. UI & NEXT-GEN TEXT SPLIT REVEALS
 ══════════════════════════════════════════ */
 (function initUI() {
