@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Case Studies | Coaxis AI</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ── CASE STUDIES PAGE SPECIFIC ── */
+    .cs-hero { min-height: 100vh; display: flex; align-items: center; padding-top: 100px; padding-bottom: 60px; position: relative; overflow: hidden; }
+    .cs-hero .container { display: flex; flex-direction: column; align-items: center; text-align: center; }
+    
+    /* ── 3D PANOPTICON VISUAL ── */
+    .cs-visual-container { position: relative; width: 100%; max-width: 800px; height: 350px; margin: 40px auto 0; perspective: 1500px; display: flex; align-items: center; justify-content: center; }
+    .cs-ring { position: absolute; border: 1px solid rgba(43,191,176,0.3); border-radius: 50%; transform-style: preserve-3d; animation: tiltSpin 20s infinite linear; }
+    .cs-ring.r1 { width: 300px; height: 300px; border-width: 2px; }
+    .cs-ring.r2 { width: 450px; height: 450px; border-style: dashed; animation-duration: 30s; animation-direction: reverse; }
+    .cs-ring.r3 { width: 600px; height: 600px; border-color: rgba(43,191,176,0.1); animation-duration: 40s; }
+
+    @keyframes tiltSpin {
+      0% { transform: rotateX(70deg) rotateZ(0deg); }
+      100% { transform: rotateX(70deg) rotateZ(360deg); }
+    }
+
+    .cs-center-pillar { position: absolute; width: 60px; height: 150px; background: linear-gradient(to top, rgba(43,191,176,0.1), rgba(43,191,176,0.6)); border-radius: 30px; filter: blur(4px); box-shadow: 0 0 40px var(--clr-accent); animation: pulsePillar 3s infinite alternate; }
+    @keyframes pulsePillar { to { height: 200px; filter: blur(8px); box-shadow: 0 0 80px var(--clr-accent); } }
+
+    /* Floating Data Panels */
+    .data-panel { position: absolute; width: 120px; height: 60px; background: rgba(5,8,15,0.9); border: 1px solid var(--clr-accent); border-radius: var(--radius-sm); display: flex; flex-direction: column; align-items: center; justify-content: center; transform-style: preserve-3d; box-shadow: 0 10px 20px rgba(0,0,0,0.5), inset 0 0 10px rgba(43,191,176,0.2); }
+    .data-panel span.val { font-family: var(--font-mono); font-size: 1.2rem; font-weight: 800; color: #fff; }
+    .data-panel span.lbl { font-size: 0.6rem; color: var(--clr-accent); text-transform: uppercase; }
+
+    .dp-1 { transform: translate(-200px, -50px) translateZ(50px) rotateY(20deg); animation: floatDP 6s infinite ease-in-out alternate; }
+    .dp-2 { transform: translate(200px, -80px) translateZ(80px) rotateY(-20deg); animation: floatDP 5s infinite ease-in-out alternate-reverse; }
+    @keyframes floatDP { to { transform: translateY(20px); } }
+
+    /* ── LONG CASE STUDY LAYOUT ── */
+    .cs-study { padding: 120px 0; position: relative; border-bottom: 2px dashed rgba(43,191,176,0.1); }
+    .cs-study:last-child { border-bottom: none; }
+    .cs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: flex-start; }
+    
+    .cs-header { background: rgba(255,255,255,0.02); padding: 50px; border-radius: var(--radius-xl); border: 1px solid rgba(43,191,176,0.1); position: sticky; top: 120px; box-shadow: 0 20px 40px rgba(0,0,0,0.4); }
+    .cs-industry { font-family: var(--font-mono); font-weight: 800; font-size: 1rem; color: var(--clr-accent); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; display: block; }
+    .cs-header h2 { font-size: 2.2rem; line-height: 1.2; margin-bottom: 30px; }
+    
+    .cs-metrics { display: flex; gap: 30px; margin-top: 40px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; }
+    .metric-item { display: flex; flex-direction: column; gap: 5px; }
+    .metric-item span.m-val { font-family: var(--font-mono); font-size: 2rem; font-weight: 900; color: var(--clr-accent); }
+    .metric-item span.m-lbl { font-size: 0.8rem; color: var(--clr-muted); text-transform: uppercase; }
+
+    .cs-body { display: flex; flex-direction: column; gap: 40px; padding-top: 20px; }
+    .cs-chunk h3 { font-size: 1.4rem; color: var(--clr-accent); margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+    .cs-chunk h3::before { content: ''; width: 8px; height: 8px; background: var(--clr-accent); border-radius: 50%; box-shadow: 0 0 10px var(--clr-accent); }
+    .cs-chunk p { color: var(--clr-muted); font-size: 1.05rem; line-height: 1.8; margin-bottom: 15px; }
+
+    @media (max-width: 900px) {
+      .cs-grid { grid-template-columns: 1fr; gap: 40px; }
+      .cs-header { position: relative; top: 0; }
+      .cs-visual-container { height: 250px; }
+      .cs-ring { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="three-canvas"></canvas>
+  <div class="page" style="gap: 0;">
+
+    <header class="header" id="header">
+      <a href="index.html" class="logo"><div class="logo-wrapper"><img src="./images/coaxis_logo.png" class="brand-logo-img"><div class="logo-glow"></div></div></a>
+      <nav class="nav">
+        <a href="index.html" class="nav-btn">Home</a>
+        <div class="nav-item">
+          <span class="nav-btn">Solutions <span style="font-size: 10px; opacity: 0.5;">▼</span></span>
+          <div class="dropdown-menu">
+            <a href="services.html" class="dropdown-link">Services</a>
+            <a href="partners.html" class="dropdown-link">Partners</a>
+            <a href="process.html" class="dropdown-link">Process</a>
+          </div>
+        </div>
+        <div class="nav-item">
+          <span class="nav-btn active">Insights <span style="font-size: 10px; opacity: 0.5;">▼</span></span>
+          <div class="dropdown-menu">
+            <a href="news.html" class="dropdown-link">News</a>
+            <a href="blogs.html" class="dropdown-link">Blogs</a>
+            <a href="case-studies.html" class="dropdown-link active">Case Studies</a>
+          </div>
+        </div>
+        <a href="about.html" class="nav-btn">About Us</a>
+        <a href="contact.html" class="nav-btn">Contact</a>
+        <a href="contact.html" class="nav-cta">Let's Build</a>
+      </nav>
+    </header>
+
+    <!-- ══ HERO ══ -->
+    <section class="cs-hero">
+      <div class="container reveal">
+        <span class="hero-badge" style="margin-bottom: 24px;"><span></span>Proven Outcomes</span>
+        <h1 style="font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 900; letter-spacing: -1px; margin-bottom: 20px;">Execution in <span class="accent">Motion</span>.</h1>
+        <p style="font-size: 1.15rem; color: var(--clr-muted); line-height: 1.8; max-width: 600px; margin: 0 auto;">We don't publish theoretical models. We publish verified ROI. Explore how we have fundamentally transformed operations across highly regulated sectors.</p>
+
+        <!-- 3D Panopticon Visual -->
+        <div class="cs-visual-container">
+           <div class="cs-ring r1"></div>
+           <div class="cs-ring r2"></div>
+           <div class="cs-ring r3"></div>
+           <div class="cs-center-pillar"></div>
+           
+           <div class="data-panel dp-1">
+              <span class="val">85%</span>
+              <span class="lbl">Efficiency Gain</span>
+           </div>
+           <div class="data-panel dp-2">
+              <span class="val">Zero</span>
+              <span class="lbl">Data Breaches</span>
+           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ CASE STUDY 1: Finance ══ -->
+    <section class="cs-study section">
+      <div class="glow-blob" style="left: -200px; top: 10%;"></div>
+      <div class="container cs-grid">
+         <!-- Sticky Left Header -->
+         <div class="cs-header reveal">
+            <span class="cs-industry">Banking &amp; Finance</span>
+            <h2>Automating KYC &amp; Risk Assessment Pipelines.</h2>
+            <div class="cs-metrics">
+               <div class="metric-item">
+                  <span class="m-val" data-count="92" data-suffix="%">0%</span>
+                  <span class="m-lbl">Time Reduction</span>
+               </div>
+               <div class="metric-item">
+                  <span class="m-val" data-count="3" data-suffix="M+">$0</span>
+                  <span class="m-lbl">Annual Savings</span>
+               </div>
+            </div>
+         </div>
+         <!-- Right Content Scroll -->
+         <div class="cs-body reveal reveal-delay-1">
+            <div class="cs-chunk">
+               <h3>The Challenge</h3>
+               <p>A leading regional wealth management firm was struggling with an exponentially growing backlog of Know Your Customer (KYC) documentation. Analysts were spending 70% of their time manually extracting entity data from unstructured PDFs, emails, and physical scans.</p>
+               <p>This manual extraction not only bottlenecked client onboarding times to roughly 14 days, but human error rates during data entry occasionally triggered severe compliance flags, risking multi-million dollar fines under strict regional MAS guidelines.</p>
+            </div>
+            <div class="cs-chunk">
+               <h3>The Solution</h3>
+               <p>Coaxis engineered a completely autonomous, secure document-processing pipeline utilizing off-the-shelf OCR combined with a fine-tuned, privately deployed LLM. Using our Data Readiness methodology, we normalized incoming documentation immediately.</p>
+               <p>We then orchestrated a swarm of narrow AI agents: one to strictly extract structural data, one to verify data against external global sanction lists via secured APIs, and a final "Supervisor Agent" to compile the risk dossier. The human element was shifted entirely from "data entry" to final "decision review".</p>
+            </div>
+            <div class="cs-chunk">
+               <h3>The Result</h3>
+               <p>The onboarding pipeline was compressed from 14 days to under 4 hours. By removing manual data scraping, human error in the extraction process dropped to absolute zero. The firm repurposed its analytical talent toward actual wealth generation strategies instead of administrative overhead.</p>
+            </div>
+         </div>
+      </div>
+    </section>
+
+    <!-- ══ CASE STUDY 2: Supply Chain ══ -->
+    <section class="cs-study section" style="background: rgba(255,255,255,0.01);">
+      <div class="glow-blob" style="right: -200px; top: 30%;"></div>
+      <div class="container cs-grid" style="direction: rtl;">
+         <div class="cs-header reveal" style="direction: ltr;">
+            <span class="cs-industry">Supply Chain &amp; Logistics</span>
+            <h2>Dynamically Routing Global Freight With Autonomous AI.</h2>
+            <div class="cs-metrics">
+               <div class="metric-item">
+                  <span class="m-val" data-count="24" data-suffix="/7">0</span>
+                  <span class="m-lbl">Uptime Orchestration</span>
+               </div>
+               <div class="metric-item">
+                  <span class="m-val" data-count="45" data-suffix="%">0%</span>
+                  <span class="m-lbl">SLA Violations Drop</span>
+               </div>
+            </div>
+         </div>
+         <div class="cs-body reveal reveal-delay-1" style="direction: ltr;">
+            <div class="cs-chunk">
+               <h3>The Challenge</h3>
+               <p>A global logistics proxy faced daily disruptions due to geopolitical unpredictability and supply chain blockages. Operations managers were forced to monitor disparate dashboards across sea freight, air cargo, and land transport systems manually.</p>
+               <p>When an anomaly occurred (like a port strike or sudden weather event), the lag time to manually reroute freight resulted in significant penalty fees and degraded client trust.</p>
+            </div>
+            <div class="cs-chunk">
+               <h3>The Solution</h3>
+               <p>Coaxis implemented a continuous monitoring automation layer powered by advanced decisioning models. We integrated data feeds from global shipping APIs, weather stations, and the client's internal legacy ERP system using secure, robust RPA connectors.</p>
+               <p>Instead of merely alerting humans, the AI Agent was empowered with "Next-Best-Action" capabilities. It autonomously drafted rerouting plans, calculated the cost delta, and preemptively generated the necessary customs adjustment documentation, presenting the fully formed solution to the logistics manager for a single-click approval.</p>
+            </div>
+            <div class="cs-chunk">
+               <h3>The Result</h3>
+               <p>SLA violations plummeted by 45% within the first operational quarter. The system now operates 24/7 without needing a human to catch the initial warning signs, vastly improving supply chain resilience and protecting the firm's bottom line.</p>
+            </div>
+         </div>
+      </div>
+    </section>
+
+    <!-- ══ FOOTER ══ -->
+    <footer class="footer">
+      <div id="footer-3d-bg"></div>
+      <div class="container footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo-wrap"><img src="./images/coaxis_logo.png" class="footer-brand-logo"><div class="logo-glow-footer"></div></div>
+          <p class="footer-tagline">Bridging AI's promise and your business reality</p>
+        </div>
+        <div class="footer-col"><h5 class="footer-title">Solutions</h5><ul class="footer-menu"><li><a href="services.html">Services</a></li><li><a href="partners.html">Partners</a></li><li><a href="process.html">Process</a></li></ul></div>
+        <div class="footer-col"><h5 class="footer-title">Insights</h5><ul class="footer-menu"><li><a href="news.html">News</a></li><li><a href="blogs.html">Blogs</a></li><li><a href="case-studies.html">Case Studies</a></li></ul></div>
+        <div class="footer-col"><h5 class="footer-title">Company</h5><ul class="footer-menu"><li><a href="about.html">About Us</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+      </div>
+      <div class="container footer-bottom"><p class="footer-copy">© 2026 Coaxis AI. All rights reserved.</p></div>
+    </footer>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

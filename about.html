@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us | Coaxis AI</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ── ABOUT PAGE SPECIFIC ── */
+    .abt-hero { min-height: 100vh; display: flex; align-items: center; padding-top: 100px; padding-bottom: 60px; position: relative; overflow: hidden; }
+    .abt-hero .container { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .abt-hero h1 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 900; margin-bottom: 30px; letter-spacing: -1px; }
+
+    /* ── 3D GEOMETRIC MESH VISUAL ── */
+    .abt-visual { position: relative; width: 100%; aspect-ratio: 1 / 1; max-width: 500px; margin: 0 auto; perspective: 1200px; display: flex; align-items: center; justify-content: center; }
+    .mesh-core { position: absolute; width: 250px; height: 250px; transform-style: preserve-3d; animation: spinCore 20s infinite linear; }
+    @keyframes spinCore { to { transform: rotateX(360deg) rotateY(360deg); } }
+
+    .mesh-poly { position: absolute; width: 100%; height: 100%; border: 1px solid rgba(43,191,176,0.3); border-radius: 4px; box-shadow: inset 0 0 20px rgba(43,191,176,0.1); }
+    .mesh-poly:nth-child(1) { transform: translateZ(125px); background: rgba(5,8,15,0.4); }
+    .mesh-poly:nth-child(2) { transform: rotateX(180deg) translateZ(125px); }
+    .mesh-poly:nth-child(3) { transform: rotateX(90deg) translateZ(125px); border-color: rgba(43,191,176,0.5); }
+    .mesh-poly:nth-child(4) { transform: rotateX(-90deg) translateZ(125px); }
+    .mesh-poly:nth-child(5) { transform: rotateY(90deg) translateZ(125px); }
+    .mesh-poly:nth-child(6) { transform: rotateY(-90deg) translateZ(125px); border-color: rgba(43,191,176,0.8); background: rgba(43,191,176,0.05); }
+
+    .mesh-dot { position: absolute; width: 12px; height: 12px; background: var(--clr-accent); border-radius: 50%; box-shadow: 0 0 20px var(--clr-accent); }
+    .mesh-dot.d1 { top: -6px; left: -6px; }
+    .mesh-dot.d2 { top: -6px; right: -6px; }
+    .mesh-dot.d3 { bottom: -6px; left: -6px; }
+    .mesh-dot.d4 { bottom: -6px; right: -6px; }
+
+    /* ── LEADERSHIP GRID ── */
+    .leadership-sec { padding: 120px 0; position: relative; }
+    .team-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 40px; margin-top: 60px; }
+    .team-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(43,191,176,0.1); border-radius: var(--radius-xl); padding: 50px; position: relative; overflow: hidden; transition: all 0.5s var(--ease-out); transform-style: preserve-3d; }
+    .team-card:hover { border-color: var(--clr-accent); transform: translateY(-10px) rotateX(2deg); background: rgba(43,191,176,0.03); box-shadow: 0 40px 80px rgba(0,0,0,0.6); }
+    
+    .team-card h4 { font-size: 2.2rem; color: #fff; margin-bottom: 5px; }
+    .team-card .tag { margin-bottom: 25px; display: inline-block; }
+    .team-card p { color: var(--clr-muted); line-height: 1.8; font-size: 1.05rem; }
+    .team-card ul { margin-top: 20px; list-style-type: none; }
+    .team-card ul li { margin-bottom: 10px; color: #fff; font-size: 0.95rem; display: flex; align-items: center; gap: 10px; }
+    .team-card ul li::before { content: '■'; color: var(--clr-accent); font-size: 0.6rem; }
+
+    /* Background Typography */
+    .bg-type { position: absolute; font-size: 20vw; font-weight: 900; color: rgba(255,255,255,0.01); line-height: 0.8; top: 10%; right: -5%; z-index: -1; white-space: nowrap; user-select: none; pointer-events: none; }
+    
+    /* Origin Story */
+    .origin-sec { padding: 120px 0; background: rgba(5,8,15,0.6); border-top: 1px solid rgba(43,191,176,0.1); border-bottom: 1px solid rgba(43,191,176,0.1); position: relative; overflow: hidden; }
+    .origin-content { max-width: 800px; margin: 0 auto; text-align: center; position: relative; z-index: 2; }
+    .origin-content p { font-size: 1.2rem; color: var(--clr-muted); line-height: 1.9; margin-bottom: 30px; }
+
+    @media (max-width: 900px) {
+      .abt-hero .container { grid-template-columns: 1fr; gap: 40px; }
+      .team-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="three-canvas"></canvas>
+  <div class="page" style="gap: 0;">
+
+    <header class="header" id="header">
+      <a href="index.html" class="logo">
+        <div class="logo-wrapper"><img src="./images/coaxis_logo.png" class="brand-logo-img"><div class="logo-glow"></div></div>
+      </a>
+      <nav class="nav">
+        <a href="index.html" class="nav-btn">Home</a>
+        <div class="nav-item">
+          <span class="nav-btn">Solutions <span style="font-size: 10px; opacity: 0.5;">▼</span></span>
+          <div class="dropdown-menu">
+            <a href="services.html" class="dropdown-link">Services</a>
+            <a href="partners.html" class="dropdown-link">Partners</a>
+            <a href="process.html" class="dropdown-link">Process</a>
+          </div>
+        </div>
+        <div class="nav-item">
+          <span class="nav-btn">Insights <span style="font-size: 10px; opacity: 0.5;">▼</span></span>
+          <div class="dropdown-menu">
+            <a href="news.html" class="dropdown-link">News</a>
+            <a href="blogs.html" class="dropdown-link">Blogs</a>
+            <a href="case-studies.html" class="dropdown-link">Case Studies</a>
+          </div>
+        </div>
+        <a href="about.html" class="nav-btn active">About Us</a>
+        <a href="contact.html" class="nav-btn">Contact</a>
+        <a href="contact.html" class="nav-cta">Let's Build</a>
+      </nav>
+    </header>
+
+    <!-- ══ HERO ══ -->
+    <section class="abt-hero">
+      <div class="glow-blob" style="left:-100px; top:20%;"></div>
+      <div class="container">
+        <div class="abt-hero-left">
+          <span class="hero-badge" style="margin-bottom: 24px; display: inline-flex;"><span></span>Corporate Identity</span>
+          <h1>Bridging the <span class="accent">Gap</span>.</h1>
+          <p style="font-size: 1.15rem; color: var(--clr-muted); line-height: 1.8; max-width: 500px;">Coaxis AI is an elite AI Systems Integrator dedicated to augmenting human capability so companies achieve vastly more than they ever thought possible.</p>
+        </div>
+        
+        <!-- 3D Polyhedron Visual -->
+        <div class="abt-visual reveal">
+          <div class="mesh-core">
+            <div class="mesh-poly">
+               <div class="mesh-dot d1"></div><div class="mesh-dot d2"></div><div class="mesh-dot d3"></div><div class="mesh-dot d4"></div>
+            </div>
+            <div class="mesh-poly"></div>
+            <div class="mesh-poly"></div>
+            <div class="mesh-poly"></div>
+            <div class="mesh-poly"></div>
+            <div class="mesh-poly"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ ORIGIN & MISSION ══ -->
+    <section class="origin-sec">
+      <div class="glow-blob" style="right:-200px; top:50%; transform:translateY(-50%);"></div>
+      <div class="container origin-content reveal">
+         <span class="sec-label">Our Mission</span>
+         <h2 style="font-size: 3rem; margin-bottom: 30px; color: #fff;">Converting Technology into Performance.</h2>
+         <p>The business world does not lack visionary AI models; it lacks execution. When massive technological shifts occur, enterprises often freeze entirely or invest heavily in fragmented tools that fail to integrate. Coaxis AI was founded by industry veterans specifically to solve the "execution gap."</p>
+         <p>We believe that AI should not be a siloed experiment living on a dashboard. It must be woven directly into the operational workflows that determine your bottom line. We exist to hold technology accountable to ROI.</p>
+      </div>
+    </section>
+
+    <!-- ══ LEADERSHIP TEAM ══ -->
+    <section class="leadership-sec section">
+      <div class="bg-type">LEADERS</div>
+      <div class="container">
+        <span class="sec-label reveal">The Architects</span>
+        <h2 class="section-title reveal reveal-delay-1">Our Leadership Team</h2>
+        
+        <div class="team-grid">
+           <!-- Rahul -->
+           <div class="team-card reveal">
+              <h4>Rahul Budhraja</h4>
+              <span class="tag">Data & Strategy</span>
+              <p>With over 30 years of deep corporate experience spanning Nielsen, Genpact, and Analytic Edge, Rahul has spearheaded global analytics consulting operations for CXOs across continents. His expertise lies in aligning massive data operations with overarching corporate strategy.</p>
+              <ul>
+                 <li>Ex-Nielsen Global Analytics Leader</li>
+                 <li>Pioneered data frameworks for Fortune 500s</li>
+                 <li>Expert in organizational AI readiness</li>
+              </ul>
+           </div>
+           
+           <!-- Vinay -->
+           <div class="team-card reveal reveal-delay-1">
+              <h4>Vinay Mathur</h4>
+              <span class="tag">Transformation</span>
+              <p>A seasoned C-suite executive with 30+ years navigating complex environments. Having held CFO, CEO, and MD roles at global giants like PepsiCo, Heineken, and Suntory Garuda, Vinay ensures that all AI integrations are fiercely aligned with pure operational growth and structural overhaul.</p>
+              <ul>
+                 <li>Ex-CEO/CFO PepsiCo & Heineken Divisions</li>
+                 <li>Corporate structural transformation specialist</li>
+                 <li>Financial risk mitigation in technology</li>
+              </ul>
+           </div>
+           
+           <!-- Jishnu -->
+           <div class="team-card reveal">
+              <h4>Jishnu Bhattacharya</h4>
+              <span class="tag">Data Science & ML</span>
+              <p>An applied machine learning leader with over 25 years of engineering experience. With foundational roots at Tata, Dun & Bradstreet, and ICICI, Jishnu is the architect behind deploying complex, predictive machine learning models securely within legacy financial infrastructures.</p>
+              <ul>
+                 <li>Ex-Dun & Bradstreet Analytics Lead</li>
+                 <li>Applied ML architecture and security</li>
+                 <li>Predictive modeling veteran</li>
+              </ul>
+           </div>
+
+           <!-- Abirami -->
+           <div class="team-card reveal reveal-delay-1">
+              <h4>Abirami Kamatchi</h4>
+              <span class="tag">AI Engineering</span>
+              <p>At the bleeding edge of autonomous tech, Abirami brings 8+ years of crucial, modern experience building scalable ML platforms and production-grade decision systems. She directly architects the agentic swarms that power Coaxis's deployment layer.</p>
+              <ul>
+                 <li>Expert in modern LLM orchestration (n8n, LangChain)</li>
+                 <li>Deployment of production-grade agentic swarms</li>
+                 <li>Cloud-native workflow architecture</li>
+              </ul>
+           </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══ FOOTER ══ -->
+    <footer class="footer">
+      <div id="footer-3d-bg"></div>
+      <div class="container footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo-wrap"><img src="./images/coaxis_logo.png" class="footer-brand-logo"><div class="logo-glow-footer"></div></div>
+          <p class="footer-tagline">Bridging AI's promise and your business reality</p>
+        </div>
+        <div class="footer-col"><h5 class="footer-title">Solutions</h5><ul class="footer-menu"><li><a href="services.html">Services</a></li><li><a href="partners.html">Partners</a></li><li><a href="process.html">Process</a></li></ul></div>
+        <div class="footer-col"><h5 class="footer-title">Insights</h5><ul class="footer-menu"><li><a href="news.html">News</a></li><li><a href="blogs.html">Blogs</a></li><li><a href="case-studies.html">Case Studies</a></li></ul></div>
+        <div class="footer-col"><h5 class="footer-title">Company</h5><ul class="footer-menu"><li><a href="about.html">About Us</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+      </div>
+      <div class="container footer-bottom"><p class="footer-copy">© 2026 Coaxis AI. All rights reserved.</p></div>
+    </footer>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

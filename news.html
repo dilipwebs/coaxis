@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>News & Insights | Coaxis AI</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ── NEWS PAGE SPECIFIC ── */
+    .news-hero { min-height: 100vh; display: flex; align-items: center; padding-top: 100px; padding-bottom: 60px; position: relative; overflow: hidden; }
+    .news-hero .container { display: flex; flex-direction: column; align-items: center; text-align: center; }
+    .news-hero h1 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 900; margin-bottom: 30px; letter-spacing: -1px; }
+    .news-hero p { font-size: 1.15rem; color: var(--clr-muted); line-height: 1.8; max-width: 700px; margin: 0 auto 50px; }
+    
+    /* ── 3D NEWS CUBE VISUALS ── */
+    .cube-container-wrapper { display: flex; gap: 50px; flex-wrap: wrap; justify-content: center; width: 100%; margin-top: 50px; perspective: 1500px; }
+    .cube { width: 220px; height: 220px; position: relative; transform-style: preserve-3d; animation: spinCube 20s infinite linear; }
+    .cube-wrapper { perspective: 1200px; margin: 20px; }
+    
+    .cube-face { position: absolute; width: 220px; height: 220px; background: rgba(5,8,15,0.9); border: 1px solid var(--clr-accent); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; box-shadow: inset 0 0 40px rgba(43,191,176,0.2); }
+    .cube-face.front  { transform: translateZ(110px); }
+    .cube-face.back   { transform: rotateY(180deg) translateZ(110px); }
+    .cube-face.right  { transform: rotateY(90deg) translateZ(110px); }
+    .cube-face.left   { transform: rotateY(-90deg) translateZ(110px); }
+    .cube-face.top    { transform: rotateX(90deg) translateZ(110px); }
+    .cube-face.bottom { transform: rotateX(-90deg) translateZ(110px); }
+    
+    @keyframes spinCube { from { transform: rotateX(-20deg) rotateY(0deg); } to { transform: rotateX(-20deg) rotateY(360deg); } }
+    .cube:hover { animation-play-state: paused; }
+
+    .cube-val { font-size: 3rem; font-weight: 900; color: var(--clr-accent); font-family: var(--font-mono); line-height: 1; margin-bottom: 10px; }
+    .cube-lbl { font-size: 0.9rem; color: #fff; line-height: 1.4; text-transform: uppercase; letter-spacing: 1px; }
+
+    /* ── NEWS LISTINGS ── */
+    .news-grid { display: grid; grid-template-columns: 1fr; gap: 40px; margin-top: 60px; max-width: 900px; margin-inline: auto; padding-bottom: 120px; }
+    .news-article { background: rgba(255,255,255,0.02); border: 1px solid rgba(43,191,176,0.1); border-radius: var(--radius-lg); padding: 40px; display: grid; grid-template-columns: 150px 1fr; gap: 40px; align-items: center; transition: all 0.4s; }
+    .news-article:hover { border-color: var(--clr-accent); background: rgba(43,191,176,0.03); transform: translateX(10px); }
+    
+    .news-date { text-align: center; border-right: 1px solid rgba(255,255,255,0.1); padding-right: 40px; }
+    .news-date span.dd { display: block; font-size: 3rem; font-weight: 900; font-family: var(--font-mono); color: var(--clr-accent); line-height: 1; }
+    .news-date span.mm { display: block; font-size: 1.2rem; color: #fff; text-transform: uppercase; margin-top: 5px; }
+
+    .news-content h3 { font-size: 1.6rem; color: #fff; margin-bottom: 15px; }
+    .news-content p { color: var(--clr-muted); font-size: 1.05rem; line-height: 1.6; margin-bottom: 20px; }
+    .news-meta { display: inline-block; font-size: 0.8rem; padding: 4px 10px; background: rgba(43,191,176,0.1); color: var(--clr-accent); border-radius: 4px; font-family: var(--font-mono); border: 1px solid rgba(43,191,176,0.3); }
+
+    @media (max-width: 900px) {
+      .news-article { grid-template-columns: 1fr; gap: 20px; padding: 30px; }
+      .news-date { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); padding-right: 0; padding-bottom: 20px; display: flex; align-items: baseline; gap: 15px; justify-content: flex-start; }
+      .news-date span.dd { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="three-canvas"></canvas>
+  <div class="page" style="gap: 0;">
+
+    <header class="header" id="header">
+      <a href="index.html" class="logo">
+        <div class="logo-wrapper"><img src="./images/coaxis_logo.png" class="brand-logo-img"><div class="logo-glow"></div></div>
+      </a>
+      <nav class="nav">
+        <a href="index.html" class="nav-btn">Home</a>
+        <div class="nav-item">
+          <span class="nav-btn">Solutions <span style="font-size: 10px; opacity: 0.5;">▼</span></span>
+          <div class="dropdown-menu">
+            <a href="services.html" class="dropdown-link">Services</a>
+            <a href="partners.html" class="dropdown-link">Partners</a>
+            <a href="process.html" class="dropdown-link">Process</a>
+          </div>
+        </div>
+        <div class="nav-item">
+          <span class="nav-btn active">Insights <span style="font-size: 10px; opacity: 0.5;">▼</span></span>
+          <div class="dropdown-menu">
+            <a href="news.html" class="dropdown-link active">News</a>
+            <a href="blogs.html" class="dropdown-link">Blogs</a>
+            <a href="case-studies.html" class="dropdown-link">Case Studies</a>
+          </div>
+        </div>
+        <a href="about.html" class="nav-btn">About Us</a>
+        <a href="contact.html" class="nav-btn">Contact</a>
+        <a href="contact.html" class="nav-cta">Let's Build</a>
+      </nav>
+    </header>
+
+    <!-- ══ HERO ══ -->
+    <section class="news-hero">
+      <div class="glow-blob" style="left:50%; top:50%; transform:translate(-50%, -50%);"></div>
+      <div class="container reveal">
+        <span class="hero-badge" style="margin-bottom: 24px;"><span></span>The AI Moment</span>
+        <h1>Industry News &amp; Data.</h1>
+        <p>Stay updated on the macroeconomic shifts driving the Agentic AI revolution across Southeast Asia and global markets.</p>
+
+        <!-- 3D Stat Cubes -->
+        <div class="cube-container-wrapper">
+          <!-- Cube 1 -->
+          <div class="cube-wrapper">
+            <div class="cube">
+              <div class="cube-face front"><div class="cube-val">$3T+</div><div class="cube-lbl">Productivity<br>Opportunity</div></div>
+              <div class="cube-face back"><div class="cube-val">$3T+</div><div class="cube-lbl">Productivity<br>Opportunity</div></div>
+              <div class="cube-face right"><div class="cube-val">$3T+</div><div class="cube-lbl">Productivity<br>Opportunity</div></div>
+              <div class="cube-face left"><div class="cube-val">$3T+</div><div class="cube-lbl">Productivity<br>Opportunity</div></div>
+              <div class="cube-face top"></div><div class="cube-face bottom"></div>
+            </div>
+          </div>
+          <!-- Cube 2 -->
+          <div class="cube-wrapper">
+            <div class="cube" style="animation-direction: reverse; animation-delay: -5s;">
+              <div class="cube-face front"><div class="cube-val">42%</div><div class="cube-lbl">Enterprises Fully<br>Integrated AI</div></div>
+              <div class="cube-face back"><div class="cube-val">42%</div><div class="cube-lbl">Enterprises Fully<br>Integrated AI</div></div>
+              <div class="cube-face right"><div class="cube-val">42%</div><div class="cube-lbl">Enterprises Fully<br>Integrated AI</div></div>
+              <div class="cube-face left"><div class="cube-val">42%</div><div class="cube-lbl">Enterprises Fully<br>Integrated AI</div></div>
+              <div class="cube-face top"></div><div class="cube-face bottom"></div>
+            </div>
+          </div>
+          <!-- Cube 3 -->
+          <div class="cube-wrapper">
+            <div class="cube" style="animation-delay: -10s;">
+              <div class="cube-face front"><div class="cube-val">57%</div><div class="cube-lbl">Favor Hybrid<br>Build & Buy</div></div>
+              <div class="cube-face back"><div class="cube-val">57%</div><div class="cube-lbl">Favor Hybrid<br>Build & Buy</div></div>
+              <div class="cube-face right"><div class="cube-val">57%</div><div class="cube-lbl">Favor Hybrid<br>Build & Buy</div></div>
+              <div class="cube-face left"><div class="cube-val">57%</div><div class="cube-lbl">Favor Hybrid<br>Build & Buy</div></div>
+              <div class="cube-face top"></div><div class="cube-face bottom"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══ NEWS LIST ══ -->
+    <section class="section section--center">
+      <div class="container">
+        <span class="sec-label reveal">Latest Bulletins</span>
+        <h2 class="section-title reveal reveal-delay-1" style="margin-bottom: 60px;">Market Updates</h2>
+
+        <div class="news-grid">
+           <!-- Article 1 -->
+           <article class="news-article reveal">
+             <div class="news-date">
+               <span class="dd">12</span>
+               <span class="mm">Apr 2026</span>
+             </div>
+             <div class="news-content">
+                <span class="news-meta">Industry Report</span>
+                <h3>Enterprise AI Integration Surges from 11% to 42%</h3>
+                <p>Recent market data highlights an unprecedented leap in successful AI deployments across the region early this year, up significantly from late 2025. Coaxis AI attributes this to the shift from basic LLM chatbots to structured, agentic workflow automations.</p>
+             </div>
+           </article>
+
+           <!-- Article 2 -->
+           <article class="news-article reveal reveal-delay-1">
+             <div class="news-date">
+               <span class="dd">28</span>
+               <span class="mm">Mar 2026</span>
+             </div>
+             <div class="news-content">
+                <span class="news-meta">Partner Announcement</span>
+                <h3>Coaxis AI Deepens 'Borrow' Layer Capability</h3>
+                <p>Responding to the statistic that 57% of organizations now favor a blend of build & buy strategies, Coaxis AI has expanded its partner ecosystem to include advanced orchestration engines, minimizing the overhead legacy firms face when adopting AI.</p>
+             </div>
+           </article>
+
+           <!-- Article 3 -->
+           <article class="news-article reveal reveal-delay-2">
+             <div class="news-date">
+               <span class="dd">15</span>
+               <span class="mm">Mar 2026</span>
+             </div>
+             <div class="news-content">
+                <span class="news-meta">Macro Trends</span>
+                <h3>The $3 Trillion Productivity Opportunity</h3>
+                <p>Global economic forecasts agree that Agentic AI is the defining opportunity of the decade. Enterprises that seek trusted integration partners are projected to capture early market share by resolving internal data readiness bottlenecks.</p>
+             </div>
+           </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ FOOTER ══ -->
+    <footer class="footer">
+      <div id="footer-3d-bg"></div>
+      <div class="container footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo-wrap"><img src="./images/coaxis_logo.png" class="footer-brand-logo"><div class="logo-glow-footer"></div></div>
+          <p class="footer-tagline">Bridging AI's promise and your business reality</p>
+        </div>
+        <div class="footer-col"><h5 class="footer-title">Solutions</h5><ul class="footer-menu"><li><a href="services.html">Services</a></li><li><a href="partners.html">Partners</a></li><li><a href="process.html">Process</a></li></ul></div>
+        <div class="footer-col"><h5 class="footer-title">Insights</h5><ul class="footer-menu"><li><a href="news.html">News</a></li><li><a href="blogs.html">Blogs</a></li><li><a href="case-studies.html">Case Studies</a></li></ul></div>
+        <div class="footer-col"><h5 class="footer-title">Company</h5><ul class="footer-menu"><li><a href="about.html">About Us</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+      </div>
+      <div class="container footer-bottom"><p class="footer-copy">© 2026 Coaxis AI. All rights reserved.</p></div>
+    </footer>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

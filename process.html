@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Process | Coaxis AI</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ── PROCESS PAGE SPECIFIC ── */
+    .proc-hero { min-height: 100vh; display: flex; align-items: center; padding-top: 100px; padding-bottom: 60px; position: relative; overflow: hidden; }
+    .proc-hero .container { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    
+    /* ── 3D SPIRAL / STAIRCASE VISUAL ── */
+    .proc-visual { position: relative; width: 100%; aspect-ratio: 1 / 1; max-width: 500px; margin: 0 auto; perspective: 1000px; transform-style: preserve-3d; }
+    .stair { position: absolute; width: 140px; height: 140px; background: rgba(5,8,15,0.8); border: 1px solid var(--clr-accent); border-radius: var(--radius-sm); left: 50%; top: 50%; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-weight: 800; font-size: 1.5rem; color: #fff; box-shadow: 0 20px 40px rgba(0,0,0,0.8), inset 0 0 20px rgba(43,191,176,0.2); animation: spinStairs 15s linear infinite; transform-style: preserve-3d; }
+    .stair::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent); }
+    
+    .stair.s-1 { transform: translate(-50%, -50%) translateZ(-100px) translateY(100px) rotateX(60deg) rotateZ(0deg); opacity: 0.4; }
+    .stair.s-2 { transform: translate(-50%, -50%) translateZ(0px) translateY(0px) rotateX(60deg) rotateZ(45deg); opacity: 0.7; border-color: rgba(43,191,176,0.6); }
+    .stair.s-3 { transform: translate(-50%, -50%) translateZ(100px) translateY(-100px) rotateX(60deg) rotateZ(90deg); opacity: 1; box-shadow: 0 40px 60px rgba(0,0,0,0.9), inset 0 0 40px rgba(43,191,176,0.4); text-shadow: 0 0 10px rgba(43,191,176,0.8); }
+
+    /* Connecting beam */
+    .beam { position: absolute; width: 4px; height: 280px; background: linear-gradient(to bottom, transparent, var(--clr-accent), transparent); left: 50%; top: 50%; transform: translate(-50%, -50%) translateZ(0); filter: blur(2px); animation: pulseBeam 2s infinite alternate; }
+
+    @keyframes spinStairs {
+       100% {
+         transform: translate(-50%, -50%) translateZ(var(--z)) translateY(var(--y)) rotateX(60deg) rotateZ(calc(var(--r) + 360deg));
+       }
+    }
+    
+    .stair.s-1 { --z: -100px; --y: 100px; --r: 0deg; }
+    .stair.s-2 { --z: 0px; --y: 0px; --r: 45deg; }
+    .stair.s-3 { --z: 100px; --y: -100px; --r: 90deg; }
+
+    @keyframes pulseBeam { to { filter: blur(6px); opacity: 0.5; height: 320px; } }
+
+    /* ── VERTICAL TIMELINE LAYOUT ── */
+    .timeline-sec { padding: 100px 0 150px; position: relative; }
+    .timeline-line { position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, transparent, rgba(43,191,176,0.3), transparent); transform: translateX(-50%); }
+    
+    .tl-node { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; margin-bottom: 120px; position: relative; align-items: center; }
+    .tl-node:nth-child(even) .tl-content { order: -1; text-align: right; }
+    .tl-node:nth-child(even) .tl-feature-list { justify-content: flex-end; }
+    
+    .tl-marker { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; background: #05080f; border: 2px solid var(--clr-accent); border-radius: 50%; z-index: 2; display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-weight: 800; color: var(--clr-accent); box-shadow: 0 0 20px rgba(43,191,176,0.4); }
+    .tl-marker::after { content: ''; position: absolute; width: 60px; height: 60px; border-radius: 50%; border: 1px dashed rgba(43,191,176,0.4); animation: rotateMarker 10s linear infinite; }
+    @keyframes rotateMarker { to { transform: rotate(360deg); } }
+
+    .tl-content { background: rgba(255,255,255,0.02); padding: 50px; border-radius: var(--radius-xl); border: 1px solid rgba(43,191,176,0.1); position: relative; z-index: 1; transition: all 0.4s var(--ease-out); transform-style: preserve-3d; }
+    .tl-content:hover { border-color: var(--clr-accent); transform: translateY(-10px) scale(1.02); box-shadow: 0 30px 60px rgba(0,0,0,0.6); background: rgba(43,191,176,0.03); }
+    .tl-content h2 { font-size: 2.2rem; color: var(--clr-accent); margin-bottom: 20px; }
+    .tl-content h3 { font-size: 1.2rem; color: #fff; margin-bottom: 20px; font-weight: 600; }
+    .tl-content p { color: var(--clr-muted); line-height: 1.7; font-size: 1.05rem; }
+    
+    .tl-feature-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+    .tl-tag { background: rgba(43,191,176,0.1); color: var(--clr-accent); padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-family: var(--font-mono); border: 1px solid rgba(43,191,176,0.2); }
+
+    .tl-visual-box { width: 100%; height: 300px; display: flex; align-items: center; justify-content: center; }
+    .tl-visual-box svg { width: 80%; height: 80%; filter: drop-shadow(0 0 20px rgba(43,191,176,0.3)); }
+
+    @media (max-width: 900px) {
+      .proc-hero .container { grid-template-columns: 1fr; gap: 40px; }
+      .timeline-line { left: 30px; }
+      .tl-node { grid-template-columns: 1fr; gap: 30px; margin-bottom: 80px; }
+      .tl-marker { left: 30px; }
+      .tl-node:nth-child(even) .tl-content { order: unset; text-align: left; }
+      .tl-node:nth-child(even) .tl-feature-list { justify-content: flex-start; }
+      .tl-content { margin-left: 70px; }
+      .tl-visual-box { display: none; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="three-canvas"></canvas>
+  <div class="page" style="gap: 0;">
+
+    <header class="header" id="header">
+      <a href="index.html" class="logo">
+        <div class="logo-wrapper"><img src="./images/coaxis_logo.png" class="brand-logo-img"><div class="logo-glow"></div></div>
+      </a>
+      <nav class="nav">
+        <a href="index.html" class="nav-btn">Home</a>
+        <div class="nav-item">
+          <span class="nav-btn">Solutions <span style="font-size: 10px; opacity: 0.5;">▼</span></span>
+          <div class="dropdown-menu">
+            <a href="services.html" class="dropdown-link">Services</a>
+            <a href="partners.html" class="dropdown-link">Partners</a>
+            <a href="process.html" class="dropdown-link active">Process</a>
+          </div>
+        </div>
+        <div class="nav-item">
+          <span class="nav-btn">Insights <span style="font-size: 10px; opacity: 0.5;">▼</span></span>
+          <div class="dropdown-menu">
+            <a href="news.html" class="dropdown-link">News</a>
+            <a href="blogs.html" class="dropdown-link">Blogs</a>
+            <a href="case-studies.html" class="dropdown-link">Case Studies</a>
+          </div>
+        </div>
+        <a href="about.html" class="nav-btn">About Us</a>
+        <a href="contact.html" class="nav-btn">Contact</a>
+        <a href="contact.html" class="nav-cta">Let's Build</a>
+      </nav>
+    </header>
+
+    <!-- ══ HERO ══ -->
+    <section class="proc-hero">
+      <div class="container">
+        <!-- Text -->
+        <div class="proc-hero-left">
+          <span class="hero-badge" style="margin-bottom: 24px; display: inline-flex;"><span></span>3-Phase Delivery Model</span>
+          <h1>From <span class="accent">Diagnostic</span> to Scale.</h1>
+          <p style="font-size: 1.15rem; color: var(--clr-muted); line-height: 1.8; max-width: 500px;">A clear, low-risk path to enterprise-wide AI transformation with measurable business outcomes. We don't just hand over a tool; we integrate a capability.</p>
+        </div>
+        <!-- 3D Staircase Visualization -->
+        <div class="proc-visual reveal">
+           <div class="beam"></div>
+           <div class="stair s-1">01</div>
+           <div class="stair s-2">02</div>
+           <div class="stair s-3">03</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ TIMELINE ══ -->
+    <section class="timeline-sec">
+      <div class="container">
+        <div class="timeline-line"></div>
+
+        <!-- Node 01: Diagnostic -->
+        <div class="tl-node reveal">
+          <div class="tl-marker">01</div>
+          <div class="tl-content">
+             <span class="tag" style="margin-bottom: 15px; display: inline-block;">Phase 1 • 4–6 Weeks</span>
+             <h2>AI Readiness Diagnostic</h2>
+             <h3>Mapping the potential against reality.</h3>
+             <p>We begin by auditing your structural data maturity and business workflows. Through intensive executive workshops, we isolate specific pain points where automation or cognitive insight generates undeniable ROI. We analyze your systems, pinpoint legacy debt, and output a strict architectural blueprint.</p>
+             <div class="tl-feature-list">
+               <span class="tl-tag">Executive Workshops</span>
+               <span class="tl-tag">Data Maturity Assessment</span>
+               <span class="tl-tag">Gap Analysis</span>
+               <span class="tl-tag">ROI Projections</span>
+             </div>
+          </div>
+          <div class="tl-visual-box">
+             <!-- Radar / Audit SVG -->
+             <svg viewBox="0 0 100 100" fill="none">
+                <circle cx="50" cy="50" r="40" stroke="rgba(43,191,176,0.3)" stroke-dasharray="2 4" />
+                <circle cx="50" cy="50" r="25" stroke="rgba(43,191,176,0.6)" />
+                <circle cx="50" cy="50" r="10" fill="var(--clr-accent)" />
+                <path d="M50 50 L80 20" stroke="var(--clr-accent)" stroke-width="2">
+                   <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="360 50 50" dur="4s" repeatCount="indefinite" />
+                </path>
+             </svg>
+          </div>
+        </div>
+
+        <!-- Node 02: POC -->
+        <div class="tl-node reveal">
+          <div class="tl-marker">02</div>
+          <div class="tl-visual-box">
+             <!-- Gear / Prototyping SVG -->
+             <svg viewBox="0 0 100 100" fill="none">
+                <path d="M50 10 C50 10, 60 40, 90 50 C90 50, 60 60, 50 90 C50 90, 40 60, 10 50 C10 50, 40 40, 50 10" stroke="var(--clr-accent)" stroke-width="2" fill="rgba(43,191,176,0.1)">
+                   <animateTransform attributeName="transform" type="rotate" from="0 50 50" to="-360 50 50" dur="8s" repeatCount="indefinite" />
+                </path>
+                <circle cx="50" cy="50" r="15" stroke="var(--clr-accent)" stroke-width="2" fill="#05080f"/>
+             </svg>
+          </div>
+          <div class="tl-content">
+             <span class="tag" style="margin-bottom: 15px; display: inline-block;">Phase 2 • 6–8 Weeks</span>
+             <h2>ROI-Driven Proof of Concept</h2>
+             <h3>Proving value before massive scale.</h3>
+             <p>Risk mitigation is paramount. We select the highest-value use case identified in Phase 1 and build a focused, sandbox-deployed generative agent or automation workflow. Real enterprise data is securely used to validate exact KPI changes—be it processing time reduction or error rate drops.</p>
+             <div class="tl-feature-list">
+               <span class="tl-tag">Secure Sandbox Deployment</span>
+               <span class="tl-tag">Shadow Testing</span>
+               <span class="tl-tag">KPI Measurement Track</span>
+               <span class="tl-tag">Stakeholder Review</span>
+             </div>
+          </div>
+        </div>
+
+        <!-- Node 03: Scale -->
+        <div class="tl-node reveal">
+          <div class="tl-marker">03</div>
+          <div class="tl-content">
+             <span class="tag" style="margin-bottom: 15px; display: inline-block;">Phase 3 • Ongoing</span>
+             <h2>Integration &amp; Scale</h2>
+             <h3>Weaving intelligence into operations.</h3>
+             <p>Following a successful POC gate, we move to full production deployment. This phase includes bridging APIs to live ERP/CRM systems, establishing robust human-in-the-loop (HITL) guardrails, and shifting focus to change management so your workforce correctly adopts the new AI collaboration paradigm.</p>
+             <div class="tl-feature-list">
+               <span class="tl-tag">Production Migration</span>
+               <span class="tl-tag">API Integration</span>
+               <span class="tl-tag">Ongoing Monitoring</span>
+               <span class="tl-tag">Change Management</span>
+             </div>
+          </div>
+          <div class="tl-visual-box">
+             <!-- Network / Scale SVG -->
+             <svg viewBox="0 0 100 100" fill="none">
+                <circle cx="50" cy="50" r="5" fill="var(--clr-accent)" />
+                <circle cx="20" cy="20" r="10" stroke="var(--clr-accent)" />
+                <circle cx="80" cy="20" r="10" stroke="var(--clr-accent)" />
+                <circle cx="20" cy="80" r="10" stroke="var(--clr-accent)" />
+                <circle cx="80" cy="80" r="10" stroke="var(--clr-accent)" />
+                <path d="M50 50 L20 20 M50 50 L80 20 M50 50 L20 80 M50 50 L80 80" stroke="rgba(43,191,176,0.3)" stroke-width="2" stroke-dasharray="4 4">
+                   <animate attributeName="stroke-dashoffset" values="20;0" dur="2s" repeatCount="indefinite" />
+                </path>
+             </svg>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══ FOOTER ══ -->
+    <footer class="footer">
+      <div id="footer-3d-bg"></div>
+      <div class="container footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo-wrap"><img src="./images/coaxis_logo.png" class="footer-brand-logo"><div class="logo-glow-footer"></div></div>
+          <p class="footer-tagline">Bridging AI's promise and your business reality</p>
+        </div>
+        <div class="footer-col"><h5 class="footer-title">Solutions</h5><ul class="footer-menu"><li><a href="services.html">Services</a></li><li><a href="partners.html">Partners</a></li><li><a href="process.html">Process</a></li></ul></div>
+        <div class="footer-col"><h5 class="footer-title">Insights</h5><ul class="footer-menu"><li><a href="news.html">News</a></li><li><a href="blogs.html">Blogs</a></li><li><a href="case-studies.html">Case Studies</a></li></ul></div>
+        <div class="footer-col"><h5 class="footer-title">Company</h5><ul class="footer-menu"><li><a href="about.html">About Us</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+      </div>
+      <div class="container footer-bottom"><p class="footer-copy">© 2026 Coaxis AI. All rights reserved.</p></div>
+    </footer>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

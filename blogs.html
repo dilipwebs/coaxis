@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blogs | Coaxis AI</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ── BLOGS PAGE SPECIFIC ── */
+    .blog-hero { min-height: 100vh; display: flex; align-items: center; padding-top: 100px; padding-bottom: 60px; position: relative; overflow: hidden; }
+    .blog-hero .container { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 60px; align-items: center; }
+    
+    /* ── 3D BOOK / DATA VISUAL ── */
+    .blog-visual { position: relative; width: 100%; aspect-ratio: 1 / 1; max-width: 500px; margin: 0 auto; perspective: 1200px; transform-style: preserve-3d; }
+    .book-layer { position: absolute; inset: 0; transform-style: preserve-3d; animation: floatBook 8s ease-in-out infinite alternate; }
+    @keyframes floatBook {
+      0% { transform: rotateX(60deg) rotateZ(-30deg) translateY(0px); }
+      100% { transform: rotateX(55deg) rotateZ(-20deg) translateY(-30px); }
+    }
+    
+    .b-page { position: absolute; left: 50%; top: 50%; width: 200px; height: 260px; background: rgba(5,8,15,0.8); border: 1px solid var(--clr-accent); border-radius: 4px; transform-origin: left center; box-shadow: 0 0 20px rgba(43,191,176,0.2); }
+    .b-page:nth-child(1) { transform: translate(-50%, -50%) translateZ(0px) rotateY(-10deg); border-color: rgba(43,191,176,0.3); background: rgba(5,8,15,0.9); }
+    .b-page:nth-child(2) { transform: translate(-50%, -50%) translateZ(10px) rotateY(-5deg); border-color: rgba(43,191,176,0.5); }
+    .b-page:nth-child(3) { transform: translate(-50%, -50%) translateZ(20px) rotateY(0deg); animation: flipPage 6s infinite; }
+    .b-page:nth-child(4) { transform: translate(-50%, -50%) translateZ(30px) rotateY(5deg); display: flex; flex-direction: column; padding: 20px; gap: 15px; border-color: var(--clr-accent); }
+    
+    @keyframes flipPage {
+      0%, 20% { transform: translate(-50%, -50%) translateZ(20px) rotateY(0deg); }
+      80%, 100% { transform: translate(-50%, -50%) translateZ(20px) rotateY(-180deg); opacity: 0; }
+    }
+
+    /* Page lines inside top page */
+    .p-line { height: 4px; background: rgba(43,191,176,0.3); border-radius: 2px; width: 100%; position: relative; overflow: hidden; }
+    .p-line::after { content: ''; position: absolute; top:0; left:0; height:100%; width:20px; background: var(--clr-accent); box-shadow: 0 0 10px var(--clr-accent); animation: scanLine 2s linear infinite; }
+    @keyframes scanLine { 100% { transform: translateX(200px); } }
+
+    /* ── BLOG LIST ── */
+    .blog-loop { padding: 80px 0 150px; }
+    .blog-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 50px; }
+    
+    .blog-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(43,191,176,0.1); border-radius: var(--radius-xl); padding: 40px; position: relative; overflow: hidden; transition: all 0.5s var(--ease-out); transform-style: preserve-3d; }
+    .blog-card:hover { border-color: var(--clr-accent); transform: translateY(-12px) rotateX(2deg); background: rgba(43,191,176,0.03); box-shadow: 0 40px 80px rgba(0,0,0,0.6); }
+    
+    /* 3D image placeholder for blog */
+    .bc-visual { width: 100%; height: 220px; background: rgba(5,8,15,0.8); border: 1px solid rgba(43,191,176,0.2); border-radius: var(--radius-md); margin-bottom: 30px; position: relative; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .bc-visual svg { width: 60px; height: 60px; opacity: 0.5; stroke: var(--clr-accent); stroke-width: 1.5; transition: 0.5s; }
+    .blog-card:hover .bc-visual svg { transform: scale(1.2); opacity: 1; filter: drop-shadow(0 0 15px var(--clr-accent)); }
+    
+    .bc-category { font-family: var(--font-mono); font-size: 0.8rem; color: var(--clr-accent); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px; display: inline-block; padding: 4px 12px; background: rgba(43,191,176,0.1); border-radius: 20px; border: 1px solid rgba(43,191,176,0.2); }
+    .blog-card h3 { font-size: 1.8rem; color: #fff; margin-bottom: 20px; line-height: 1.3; }
+    .blog-card p { color: var(--clr-muted); line-height: 1.7; font-size: 1rem; margin-bottom: 30px; }
+    
+    .read-more { display: inline-flex; align-items: center; gap: 10px; color: var(--clr-accent); font-weight: 700; text-transform: uppercase; font-size: 0.9rem; letter-spacing: 1px; }
+    .read-more::after { content: '→'; transition: 0.3s; }
+    .blog-card:hover .read-more::after { transform: translateX(8px); }
+
+    @media (max-width: 900px) {
+      .blog-hero .container { grid-template-columns: 1fr; gap: 40px; }
+      .blog-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="three-canvas"></canvas>
+  <div class="page" style="gap: 0;">
+
+    <header class="header" id="header">
+      <a href="index.html" class="logo">
+        <div class="logo-wrapper"><img src="./images/coaxis_logo.png" class="brand-logo-img"><div class="logo-glow"></div></div>
+      </a>
+      <nav class="nav">
+        <a href="index.html" class="nav-btn">Home</a>
+        <div class="nav-item">
+          <span class="nav-btn">Solutions <span style="font-size: 10px; opacity: 0.5;">▼</span></span>
+          <div class="dropdown-menu">
+            <a href="services.html" class="dropdown-link">Services</a>
+            <a href="partners.html" class="dropdown-link">Partners</a>
+            <a href="process.html" class="dropdown-link">Process</a>
+          </div>
+        </div>
+        <div class="nav-item">
+          <span class="nav-btn active">Insights <span style="font-size: 10px; opacity: 0.5;">▼</span></span>
+          <div class="dropdown-menu">
+            <a href="news.html" class="dropdown-link">News</a>
+            <a href="blogs.html" class="dropdown-link active">Blogs</a>
+            <a href="case-studies.html" class="dropdown-link">Case Studies</a>
+          </div>
+        </div>
+        <a href="about.html" class="nav-btn">About Us</a>
+        <a href="contact.html" class="nav-btn">Contact</a>
+        <a href="contact.html" class="nav-cta">Let's Build</a>
+      </nav>
+    </header>
+
+    <!-- ══ HERO ══ -->
+    <section class="blog-hero">
+      <div class="container">
+        <!-- Text -->
+        <div class="blog-hero-left">
+          <span class="hero-badge" style="margin-bottom: 24px; display: inline-flex;"><span></span>Thought Leadership</span>
+          <h1 style="font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 900; margin-bottom: 30px; letter-spacing: -1px;">Ideas that <span class="accent">Transform</span>.</h1>
+          <p style="font-size: 1.15rem; color: var(--clr-muted); line-height: 1.8; max-width: 500px;">Deep strategic insights on transitioning from legacy data debt to pure AI equity. Written by our leadership team consisting of industry veterans with over 30 years of transformation expertise.</p>
+        </div>
+        <!-- 3D Book Visual -->
+        <div class="blog-visual reveal">
+          <div class="book-layer">
+            <div class="b-page"></div>
+            <div class="b-page"></div>
+            <div class="b-page"></div>
+            <div class="b-page">
+               <!-- Content of the top page -->
+               <div style="width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--clr-accent); display:flex; align-items:center; justify-content:center;"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#2BBFB0"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+               <div class="p-line" style="width: 80%;"></div>
+               <div class="p-line" style="width: 100%;"></div>
+               <div class="p-line" style="width: 90%; animation-delay: 0.2s;"></div>
+               <div class="p-line" style="width: 60%; animation-delay: 0.4s;"></div>
+               <div style="flex-grow: 1;"></div>
+               <div style="display:flex; gap:10px;">
+                  <div style="width:20px; height:20px; background: rgba(43,191,176,0.2);"></div>
+                  <div style="width:20px; height:20px; background: rgba(43,191,176,0.2);"></div>
+               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ BLOG POSTS ══ -->
+    <section class="blog-loop section">
+      <div class="container">
+        <span class="sec-label reveal">Editor's Picks</span>
+        <h2 class="section-title reveal reveal-delay-1" style="margin-bottom: 60px;">Strategy &amp; Analysis</h2>
+
+        <div class="blog-grid">
+           <!-- BLOG 1 -->
+           <article class="blog-card reveal">
+             <div class="bc-visual">
+                <!-- Data Structure SVG -->
+                <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="2" width="20" height="8" rx="2"/><rect x="2" y="14" width="20" height="8" rx="2"/><line x1="6" y1="6" x2="6" y2="6" stroke-width="2" stroke-linecap="round"/><line x1="6" y1="18" x2="6" y2="18" stroke-width="2" stroke-linecap="round"/></svg>
+                <div style="position: absolute; inset:0; background: radial-gradient(circle, transparent, rgba(5,8,15,0.9));"></div>
+             </div>
+             <span class="bc-category">Strategy</span>
+             <h3>Build vs Buy vs Partner: The True Cost of AI Architecture</h3>
+             <p>As enterprises rush to adopt Agentic AI, the sheer volume of choices is paralyzing. We analyze the hidden costs of building internal teams from scratch versus relying on inflexible out-of-the-box software, and why the "borrowing" strategic alliances mitigate millions in risk.</p>
+             <a href="javascript:void(0)" class="read-more">Read Full Article</a>
+           </article>
+
+           <!-- BLOG 2 -->
+           <article class="blog-card reveal reveal-delay-1">
+             <div class="bc-visual">
+                <!-- Target / Growth SVG -->
+                <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                <div style="position: absolute; inset:0; background: radial-gradient(circle, transparent, rgba(5,8,15,0.9));"></div>
+             </div>
+             <span class="bc-category">Market Trends</span>
+             <h3>Why SMEs Have the Most to Gain From ROI-Driven AI</h3>
+             <p>It is a misconception that multi-agent systems are reserved for Fortune 500 companies. Small to Medium Enterprises are perfectly positioned to leverage AI automation because they don't possess the legacy debt of massive corporations. The agility to adopt AI now is unprecedented.</p>
+             <a href="javascript:void(0)" class="read-more">Read Full Article</a>
+           </article>
+
+           <!-- BLOG 3 -->
+           <article class="blog-card reveal">
+             <div class="bc-visual">
+                <!-- Layers / Debt SVG -->
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                <div style="position: absolute; inset:0; background: radial-gradient(circle, transparent, rgba(5,8,15,0.9));"></div>
+             </div>
+             <span class="bc-category">Data Engineering</span>
+             <h3>From Legacy Debt to AI Equity</h3>
+             <p>Your LLM is only as intelligent as the data you feed it. We examine how fragmented silos and unstructured data lakes are actively hurting your inference costs. Discover our 5-step methodology to achieve perfect "Data Readiness" before orchestrating a single agent.</p>
+             <a href="javascript:void(0)" class="read-more">Read Full Article</a>
+           </article>
+
+           <!-- BLOG 4 -->
+           <article class="blog-card reveal reveal-delay-1">
+             <div class="bc-visual">
+                <!-- Shield / Security SVG -->
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 22s8-4.5 8-11.8V5l-8-3-8 3v5.2C4 17.5 12 22 12 22z"/></svg>
+                <div style="position: absolute; inset:0; background: radial-gradient(circle, transparent, rgba(5,8,15,0.9));"></div>
+             </div>
+             <span class="bc-category">Governance</span>
+             <h3 style="font-size: 1.6rem;">Human-in-the-Loop: Trust and Verifiability in Autonomous Workflows</h3>
+             <p>As agents begin to execute tasks across ERPs and CRMs, the question of accountability arises. We explore how to implement strict governance protocols and supervisor nodes to ensure AI actions remain transparent, audited, and strictly aligned with enterprise guardrails.</p>
+             <a href="javascript:void(0)" class="read-more">Read Full Article</a>
+           </article>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══ FOOTER ══ -->
+    <footer class="footer">
+      <div id="footer-3d-bg"></div>
+      <div class="container footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo-wrap"><img src="./images/coaxis_logo.png" class="footer-brand-logo"><div class="logo-glow-footer"></div></div>
+          <p class="footer-tagline">Bridging AI's promise and your business reality</p>
+        </div>
+        <div class="footer-col"><h5 class="footer-title">Solutions</h5><ul class="footer-menu"><li><a href="services.html">Services</a></li><li><a href="partners.html">Partners</a></li><li><a href="process.html">Process</a></li></ul></div>
+        <div class="footer-col"><h5 class="footer-title">Insights</h5><ul class="footer-menu"><li><a href="news.html">News</a></li><li><a href="blogs.html">Blogs</a></li><li><a href="case-studies.html">Case Studies</a></li></ul></div>
+        <div class="footer-col"><h5 class="footer-title">Company</h5><ul class="footer-menu"><li><a href="about.html">About Us</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+      </div>
+      <div class="container footer-bottom"><p class="footer-copy">© 2026 Coaxis AI. All rights reserved.</p></div>
+    </footer>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>

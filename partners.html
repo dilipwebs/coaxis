@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Partners | Coaxis AI</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;800;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* ── PARTNERS PAGE SPECIFIC ── */
+    .part-hero { min-height: 100vh; display: flex; align-items: center; padding-top: 100px; padding-bottom: 60px; position: relative; overflow: hidden; }
+    .part-hero .container { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    
+    /* ── 3D ORBITAL VISUAL ── */
+    .part-visual { position: relative; width: 100%; aspect-ratio: 1 / 1; max-width: 600px; margin: 0 auto; perspective: 1200px; transform-style: preserve-3d; }
+    .sun-node { position: absolute; inset: 30%; background: radial-gradient(circle, rgba(43,191,176,0.3), rgba(5,8,15,0.9)); border: 1px solid rgba(43,191,176,0.5); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 80px rgba(43,191,176,0.4), inset 0 0 40px rgba(43,191,176,0.2); animation: explodePulse 4s infinite alternate; z-index: 10; transform: translateZ(50px); }
+    @keyframes explodePulse { to { transform: translateZ(50px) scale(1.05); box-shadow: 0 0 120px rgba(43,191,176,0.6), inset 0 0 60px rgba(43,191,176,0.3); } }
+    .sun-node img { width: 50%; opacity: 0.8; filter: drop-shadow(0 0 10px rgba(43,191,176,0.8)); }
+    
+    /* Orbits */
+    .orbit-path { position: absolute; inset: 0; border: 1px dashed rgba(43,191,176,0.2); border-radius: 50%; transform-style: preserve-3d; animation: spinOrbit 30s linear infinite; }
+    .orbit-path.o-2 { inset: 15%; animation-duration: 40s; animation-direction: reverse; transform: rotateX(60deg) rotateY(20deg); }
+    .orbit-path.o-3 { inset: -15%; animation-duration: 60s; border-style: solid; border-color: rgba(43,191,176,0.05); transform: rotateX(-50deg) rotateY(-30deg); }
+    
+    @keyframes spinOrbit { to { transform: rotateZ(360deg) rotateX(60deg); } }
+
+    /* Planets / Partner nodes */
+    .satellite-node { position: absolute; width: 60px; height: 60px; background: rgba(5,8,15,0.9); border: 1px solid var(--clr-accent); border-radius: 50%; left: 50%; top: -30px; transform: translateX(-50%); display: flex; align-items: center; justify-content: center; font-family: var(--font-mono); font-size: 0.6rem; color: #fff; box-shadow: 0 0 20px rgba(43,191,176,0.3); animation: counterSpin 30s linear infinite; transform-style: preserve-3d; }
+    .orbit-path.o-2 .satellite-node { animation-duration: 40s; animation-direction: reverse; top: auto; bottom: -30px; }
+    @keyframes counterSpin { to { transform: translateX(-50%) rotateZ(-360deg) rotateX(-60deg); } }
+    
+    /* ── CONTENT SECTIONS ── */
+    .eco-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 60px; }
+    .eco-card { background: rgba(255,255,255,0.02); border: 1px solid rgba(43,191,176,0.1); border-radius: var(--radius-xl); padding: 50px; position: relative; overflow: hidden; transform-style: preserve-3d; transition: all 0.5s var(--ease-out); }
+    .eco-card:hover { border-color: var(--clr-accent); transform: translateY(-10px) rotateX(2deg); background: rgba(43,191,176,0.04); box-shadow: 0 40px 80px rgba(0,0,0,0.6); }
+    .eco-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at top right, rgba(43,191,176,0.1), transparent 50%); opacity: 0; transition: 0.5s; }
+    .eco-card:hover::before { opacity: 1; }
+    .eco-card h3 { font-size: 1.8rem; margin-bottom: 20px; color: var(--clr-text); }
+    .eco-card p { color: var(--clr-muted); line-height: 1.7; font-size: 1.05rem; margin-bottom: 25px; }
+
+    .detail-list { display: flex; flex-direction: column; gap: 15px; }
+    .detail-item { display: flex; align-items: center; gap: 15px; font-size: 0.95rem; color: var(--clr-text); }
+    .detail-item .check { color: var(--clr-accent); }
+
+    /* Big Quote Section */
+    .quote-sec { text-align: center; padding: 100px 0; background: linear-gradient(180deg, transparent, rgba(43,191,176,0.02) 50%, transparent); margin: 60px 0; }
+    .quote-sec h2 { font-size: clamp(2rem, 4vw, 3rem); font-weight: 300; max-width: 900px; margin: 0 auto; color: var(--clr-text); line-height: 1.4; }
+    .quote-sec h2 span { color: var(--clr-accent); font-weight: 700; }
+
+    @media (max-width: 900px) {
+      .part-hero .container { grid-template-columns: 1fr; gap: 40px; }
+      .eco-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="three-canvas"></canvas>
+  <div class="page" style="gap: 0;">
+
+    <header class="header" id="header">
+      <a href="index.html" class="logo">
+        <div class="logo-wrapper"><img src="./images/coaxis_logo.png" class="brand-logo-img"><div class="logo-glow"></div></div>
+      </a>
+      <nav class="nav">
+        <a href="index.html" class="nav-btn">Home</a>
+        <div class="nav-item">
+          <span class="nav-btn">Solutions <span style="font-size: 10px; opacity: 0.5;">▼</span></span>
+          <div class="dropdown-menu">
+            <a href="services.html" class="dropdown-link">Services</a>
+            <a href="partners.html" class="dropdown-link active">Partners</a>
+            <a href="process.html" class="dropdown-link">Process</a>
+          </div>
+        </div>
+        <div class="nav-item">
+          <span class="nav-btn">Insights <span style="font-size: 10px; opacity: 0.5;">▼</span></span>
+          <div class="dropdown-menu">
+            <a href="news.html" class="dropdown-link">News</a>
+            <a href="blogs.html" class="dropdown-link">Blogs</a>
+            <a href="case-studies.html" class="dropdown-link">Case Studies</a>
+          </div>
+        </div>
+        <a href="about.html" class="nav-btn">About Us</a>
+        <a href="contact.html" class="nav-btn">Contact</a>
+        <a href="contact.html" class="nav-cta">Let's Build</a>
+      </nav>
+    </header>
+
+    <!-- ══ HERO ══ -->
+    <section class="part-hero">
+      <div class="container">
+        <!-- Text -->
+        <div class="part-hero-left">
+          <span class="hero-badge" style="margin-bottom: 24px; display: inline-flex;"><span></span>Strategic Ecosystem</span>
+          <h1>A Network of <span class="accent">Genius</span>.</h1>
+          <p style="font-size: 1.15rem; color: var(--clr-muted); line-height: 1.8; max-width: 500px;">We don't believe in vendor lock-in. Coaxis curates a global network of specialized AI and automation leaders to build the perfectly tailored architecture for your unique enterprise challenges.</p>
+        </div>
+        <!-- 3D Orbital Model -->
+        <div class="part-visual reveal">
+           <div class="orbit-path o-1">
+             <div class="satellite-node">Data</div>
+           </div>
+           <div class="orbit-path o-2">
+             <div class="satellite-node">Agents</div>
+           </div>
+           <div class="orbit-path o-3">
+             <div class="satellite-node" style="top: auto; left: 0; bottom: 50%; transform: translateY(50%);">LLMs</div>
+             <div class="satellite-node" style="top: auto; right: -30px; left: auto; bottom: 50%; transform: translateY(50%);">RPA</div>
+           </div>
+           <div class="sun-node">
+             <span style="font-family: var(--font-mono); color: var(--clr-accent); font-size: 1.2rem; font-weight: 800; text-align: center; line-height: 1;">COAXIS<br><span style="font-size: 0.6rem; color: #fff;">CORE</span></span>
+           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ BIG QUOTE ══ -->
+    <section class="quote-sec section">
+      <div class="container reveal">
+        <h2>"No single provider holds all the answers. The future of enterprise AI relies on <span>orchestrating best-in-class models</span>, rather than betting the entire company on one vendor."</h2>
+      </div>
+    </section>
+
+    <!-- ══ ECOSYSTEM CARDS ══ -->
+    <section class="section section--center" style="padding-bottom: 120px;">
+      <div class="container">
+        <span class="sec-label reveal">Primary Partners</span>
+        <h2 class="section-title reveal reveal-delay-1">Best-of-Breed Technology</h2>
+        <p class="section-sub reveal reveal-delay-2" style="max-width: 700px; margin: 0 auto; margin-bottom: 40px;">Our alliance network bridges the gap between massive foundation models and narrow, specialized workflow automation platforms.</p>
+
+        <div class="eco-grid">
+          
+          <!-- Emergence -->
+          <div class="eco-card reveal">
+            <h3 style="display:flex; align-items:center; gap: 15px;">
+              <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="var(--clr-accent)" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+              Emergence AI (USA)
+            </h3>
+            <p>Our primary strategic partner for advanced enterprise Agentic AI. Emergence specializes in developing autonomous systems capable of executing multi-step cognitive tasks across disparate platforms.</p>
+            <div class="detail-list">
+              <div class="detail-item"><span class="check">✔</span> Unmatched reasoning engines</div>
+              <div class="detail-item"><span class="check">✔</span> High-security enterprise guardrails</div>
+              <div class="detail-item"><span class="check">✔</span> Seamless human-in-the-loop (HITL) handoffs</div>
+            </div>
+          </div>
+
+          <!-- Workflow Automation Firms -->
+          <div class="eco-card reveal reveal-delay-1">
+            <h3 style="display:flex; align-items:center; gap: 15px;">
+              <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="var(--clr-accent)" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+              Orchestration Engines
+            </h3>
+            <p>We partner with top-tier Robotic Process Automation (RPA) and integration platform providers (n8n, UiPath) to execute the decisions formulated by AI brain architectures globally.</p>
+            <div class="detail-list">
+              <div class="detail-item"><span class="check">✔</span> Connecting AI to legacy banking systems</div>
+              <div class="detail-item"><span class="check">✔</span> Automating ERP data entry flawlessly</div>
+              <div class="detail-item"><span class="check">✔</span> Bridging modern APIs and SOAP databases</div>
+            </div>
+          </div>
+
+          <!-- Provider Agnostic -->
+          <div class="eco-card reveal" style="grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; border-color: rgba(43,191,176,0.3); background: rgba(5,8,15,0.8);">
+            <div>
+              <h3 style="color: var(--clr-accent);">Provider Agnostic Data Layer</h3>
+              <p>We don't limit your potential. Through standardizing metadata architecture and API wrappers, we allow your systems to plug-and-play with any model (OpenAI, Anthropic, Gemini, or Llama) depending on cost, privacy, and reasoning requirements.</p>
+              <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <span class="tag">LLM Routing</span>
+                <span class="tag">Vector DBs</span>
+                <span class="tag">RAG Pipelines</span>
+              </div>
+            </div>
+            
+            <!-- Deep 3D Hexagon Graphic -->
+            <div style="perspective: 800px; width: 100%; height: 250px; position: relative;">
+               <div style="width: 200px; height: 200px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotateX(60deg) rotateZ(30deg); transform-style: preserve-3d; animation: float3d 8s infinite alternate;">
+                 <svg viewBox="0 0 100 100" fill="none" style="width:100%; height:100%;">
+                    <polygon points="50,5 95,25 95,75 50,95 5,75 5,25" stroke="var(--clr-accent)" stroke-width="2" fill="rgba(43,191,176,0.1)"/>
+                    <polygon points="50,15 85,32 85,68 50,85 15,68 15,32" stroke="rgba(255,255,255,0.4)" stroke-width="1" fill="none" stroke-dasharray="4 4"/>
+                    <circle cx="50" cy="50" r="10" fill="var(--clr-accent)"/>
+                    <line x1="50" y1="50" x2="50" y2="5" stroke="var(--clr-accent)" stroke-width="1"/>
+                    <line x1="50" y1="50" x2="95" y2="75" stroke="var(--clr-accent)" stroke-width="1"/>
+                    <line x1="50" y1="50" x2="5" y2="75" stroke="var(--clr-accent)" stroke-width="1"/>
+                 </svg>
+                 <!-- Floating sub hexes -->
+                 <div style="position: absolute; top: -40px; left: 50%; transform: translateZ(50px) translateX(-50%); width: 40px; height: 40px;">
+                    <svg viewBox="0 0 100 100" fill="none"><polygon points="50,5 95,25 95,75 50,95 5,75 5,25" stroke="var(--clr-accent)" stroke-width="4" fill="rgba(5,8,15,0.8)"/></svg>
+                 </div>
+               </div>
+            </div>
+            
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ══ FOOTER ══ -->
+    <footer class="footer">
+      <div id="footer-3d-bg"></div>
+      <div class="container footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo-wrap"><img src="./images/coaxis_logo.png" class="footer-brand-logo"><div class="logo-glow-footer"></div></div>
+          <p class="footer-tagline">Bridging AI's promise and your business reality</p>
+        </div>
+        <div class="footer-col"><h5 class="footer-title">Solutions</h5><ul class="footer-menu"><li><a href="services.html">Services</a></li><li><a href="partners.html">Partners</a></li><li><a href="process.html">Process</a></li></ul></div>
+        <div class="footer-col"><h5 class="footer-title">Insights</h5><ul class="footer-menu"><li><a href="news.html">News</a></li><li><a href="blogs.html">Blogs</a></li><li><a href="case-studies.html">Case Studies</a></li></ul></div>
+        <div class="footer-col"><h5 class="footer-title">Company</h5><ul class="footer-menu"><li><a href="about.html">About Us</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+      </div>
+      <div class="container footer-bottom"><p class="footer-copy">© 2026 Coaxis AI. All rights reserved.</p></div>
+    </footer>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
